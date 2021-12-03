@@ -25,6 +25,8 @@ $offset = intval($page) * $perPage;
 
 $currentImages = array_slice($imagesArray, $offset, $perPage);
 
+// imagecreatefromjpeg('./shoe.jpg');
+
 ?>
 
 <!doctype html>
@@ -51,6 +53,16 @@ $currentImages = array_slice($imagesArray, $offset, $perPage);
           <img class="img-fluid" src="<?php echo $image->getAttribute('src') ?>" alt="">
         </div>
       <?php } ?>
+
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="<?php echo '/get-image.php?url=' . $_GET['url'] . '&page=' . ($page + 1) ?>">Next</a></li>
+        </ul>
+      </nav>
     </div>
   </div>
 </body>
