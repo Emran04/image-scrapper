@@ -1,5 +1,7 @@
 <?php
 
+imagecreatefromjpeg('./shoe.jpg');
+
 $url = $_GET['url'];
 
 $ch = curl_init();
@@ -24,8 +26,6 @@ $imagesArray = iterator_to_array($imageNodes);
 $offset = intval($page) * $perPage;
 
 $currentImages = array_slice($imagesArray, $offset, $perPage);
-
-// imagecreatefromjpeg('./shoe.jpg');
 
 ?>
 
