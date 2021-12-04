@@ -1,6 +1,5 @@
 <?php
 
-imagecreatefromjpeg('./shoe.jpg');
 
 $url = $_GET['url'];
 
