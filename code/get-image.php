@@ -1,5 +1,21 @@
 <?php
 
+// Starting clock time in seconds
+$start_time = microtime(true);
+
+// $directory = './images/';
+// $images = glob($directory."*.jpg");
+
+// foreach($images as $image) {
+//     $im_php = imagecreatefromjpeg($image);
+//     $im_php = imagescale($im_php, 400);
+//     $new_height = imagesy($im_php);
+//     imagejpeg($im_php, $directory.'resize/'. basename($image));
+// }
+
+// $url = 'https://deencommerce.com/wp-content/uploads/2021/12/tufts-blue-jeans-029-1.jpg';
+// $img = './images/' . basename($url);
+// file_put_contents($img, file_get_contents($url));
 
 $url = $_GET['url'];
 
@@ -15,6 +31,18 @@ $dom = new DOMDocument();
 
 $imageNodes = $dom->getElementsByTagName('img');
 
+// Create array of images
+$imageList = [];
+foreach ($imageNodes as $node) {
+  if ($node->getAttribute('src')) {
+    // $tmpFile = file_get_contents($node->getAttribute('src'));
+    $imageList[] = [
+      'url' => $node->getAttribute('src'),
+      'alt' => $node->getAttribute('alt'),
+    ];
+  }
+}
+
 $perPage = 8;
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
 
@@ -25,6 +53,12 @@ $imagesArray = iterator_to_array($imageNodes);
 $offset = intval($page) * $perPage;
 
 $currentImages = array_slice($imagesArray, $offset, $perPage);
+
+// End clock time in seconds
+$end_time = microtime(true);
+  
+// Calculate script execution time
+$execution_time = ($end_time - $start_time);
 
 ?>
 
@@ -46,24 +80,21 @@ $currentImages = array_slice($imagesArray, $offset, $perPage);
   <div class="container">
     <h3>All images</h3>
 
-    <div class="row">
-      <?php foreach ($currentImages as $image) { ?>
-        <div class="col-3">
-          <img class="img-fluid" src="<?php echo $image->getAttribute('src') ?>" alt="">
-        </div>
-      <?php } ?>
+    <p><?php echo "Loading Time: ". round($execution_time, 2) ." sec"; ?></p>
+
+    <div>
+
+      <div class="row" id="images-container"></div>
 
       <nav aria-label="Page navigation example">
-        <ul class="pagination">
-          <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="<?php echo '/get-image.php?url=' . $_GET['url'] . '&page=' . ($page + 1) ?>">Next</a></li>
-        </ul>
+        <ul class="pagination" id="pagination"></ul>
       </nav>
     </div>
   </div>
+  <script>
+    window.data = <?php echo json_encode($imageList) ?>
+  </script>
+  <script src="./app.js"></script>
 </body>
 
 </html>
