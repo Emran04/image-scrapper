@@ -53,7 +53,7 @@ function totalPages() {
 }
 
 function renderPaginationNumbers() {
-  var paginationContainer  = document.getElementById('pagination')
+  var paginationContainer = document.getElementById('pagination')
   paginationContainer.innerHTML = ''
   var items = `<li class="page-item"><a class="page-link" href="javascript:prevPage()">Previous</a></li>`
   var numberOfPages = totalPages()
@@ -66,5 +66,7 @@ function renderPaginationNumbers() {
 }
 
 window.onload = function () {
-  changePage(1);
+  if (images.length > 0) {
+    changePage(1);
+  }
 };
