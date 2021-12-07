@@ -19,6 +19,8 @@ function changePage(pageValue) {
     </div>`;
   }
 
+  renderPaginationNumbers()
+
   var imgs = document.getElementsByTagName('img')
 
   for (let index = 0; index < imgs.length; index++) {
@@ -30,21 +32,19 @@ function changePage(pageValue) {
     var sizeContainer = this.nextElementSibling
     sizeContainer.innerHTML = `Dimension: ${this.naturalHeight}x${this.naturalWidth}`
   }
-
-  renderPaginationNumbers()
 }
 
 function nextPage() {
   if (page < totalPages()) {
-    page++;
-    changePage(page);
+    var pageNum = page + 1
+    changePage(pageNum);
   }
 }
 
 function prevPage() {
   if (page > 1) {
-    page--;
-    changePage(page);
+    var pageNum = page - 1
+    changePage(pageNum);
   }
 }
 
