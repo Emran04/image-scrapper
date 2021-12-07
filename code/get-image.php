@@ -80,23 +80,29 @@ $execution_time = ($end_time - $start_time);
 <body>
   <div class="container">
     <a href="/">Back</a>
-    <h3>All images</h3>
 
-    <?php if ($error) { ?>
-      <div class="alert alert-danger" role="alert">
-        <?php echo $error; ?>
+    <div class="row justify-content-center">
+      <div class="col-4 text-center">
+        <?php if ($error) { ?>
+          <div class="alert alert-danger" role="alert">
+            <?php echo $error; ?>
+          </div>
+        <?php } ?>
+
+        <p><?php echo "Loading Time: " . round($execution_time, 2) . " sec"; ?></p>
       </div>
-    <?php } ?>
-
-    <p><?php echo "Loading Time: " . round($execution_time, 2) . " sec"; ?></p>
+    </div>
 
     <div>
-
       <div class="row" id="images-container"></div>
 
-      <nav aria-label="Page navigation example">
-        <ul class="pagination" id="pagination"></ul>
-      </nav>
+      <div class="row">
+        <div class="col">
+          <nav class="mt-4">
+            <ul class="pagination" id="pagination"></ul>
+          </nav>
+        </div>
+      </div>
     </div>
   </div>
   <script>

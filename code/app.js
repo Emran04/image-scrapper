@@ -13,7 +13,7 @@ function changePage(pageValue) {
   imageContainer.innerHTML = "";
 
   for (var i = (page - 1) * perPage; i < (page * perPage); i++) {
-    imageContainer.innerHTML += `<div class="col-3">
+    imageContainer.innerHTML += `<div class="col-3 text-center mb-3">
       <img class="img-fluid" src="${images[i].url}" alt="${images[i].alt}">
       <div></div>
     </div>`;
