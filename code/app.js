@@ -7,19 +7,20 @@ function changePage(pageValue) {
   // Validate page
   if (page < 1) page = 1;
   if (page > totalPages()) page = totalPages();
+  renderPaginationNumbers()
 
   var imageContainer = document.getElementById('images-container')
 
   imageContainer.innerHTML = "";
 
-  for (var i = (page - 1) * perPage; i < (page * perPage); i++) {
+  var paginatedItems = images.slice((page - 1) * perPage, page * perPage)
+
+  for (var i = 0; i < paginatedItems.length; i++) {
     imageContainer.innerHTML += `<div class="col-3 text-center mb-3">
-      <img class="img-fluid" src="${images[i].url}" alt="${images[i].alt}">
+      <img class="img-fluid" src="${paginatedItems[i].url}" alt="${paginatedItems[i].alt}">
       <div></div>
     </div>`;
   }
-
-  renderPaginationNumbers()
 
   var imgs = document.getElementsByTagName('img')
 
