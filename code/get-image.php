@@ -1,5 +1,7 @@
 <?php
 
+require_once './http.php';
+
 // Starting clock time in seconds
 $start_time = microtime(true);
 
@@ -18,12 +20,7 @@ $regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?";
 $regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?";
 
 if (preg_match("/^$regex$/i", $url)) {
-  $ch = curl_init();
-
-  curl_setopt($ch, CURLOPT_URL, $url);
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-  $html = curl_exec($ch);
+  $html = HTTP::get($url);
 
   $dom = new DOMDocument();
   @$dom->loadHTML($html);
@@ -39,17 +36,6 @@ if (preg_match("/^$regex$/i", $url)) {
       ];
     }
   }
-
-  $perPage = 8;
-  $page = isset($_GET['page']) ? $_GET['page'] : 1;
-
-  $total = $imageNodes->length;
-
-  $imagesArray = iterator_to_array($imageNodes);
-
-  $offset = intval($page) * $perPage;
-
-  $currentImages = array_slice($imagesArray, $offset, $perPage);
 } else {
   $error = 'Url is not valid.';
 }
