@@ -13,9 +13,6 @@ services:
         networks:
             - app-network
     php:
-        build:
-            context: .
-            dockerfile: PHP.Dockerfile
         container_name: app_php
         image: php:8.0.0-fpm
         volumes:

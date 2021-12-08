@@ -33,7 +33,6 @@ if (preg_match("/^$regex$/i", $url)) {
   // Create array of images
   foreach ($imageNodes as $node) {
     if ($node->getAttribute('src')) {
-      // $tmpFile = file_get_contents($node->getAttribute('src'));
       $imageList[] = [
         'url' => $node->getAttribute('src'),
         'alt' => $node->getAttribute('alt'),
