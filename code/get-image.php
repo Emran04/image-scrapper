@@ -1,31 +1,64 @@
 <?php
 
-imagecreatefromjpeg('./shoe.jpg');
+// Starting clock time in seconds
+$start_time = microtime(true);
 
 $url = $_GET['url'];
 
-$ch = curl_init();
+$error = null;
 
-curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$imageList = [];
 
-$html = curl_exec($ch);
+$regex = "((https?|ftp)\:\/\/)?";
+$regex .= "([a-z0-9+!*(),;?&=\$_.-]+(\:[a-z0-9+!*(),;?&=\$_.-]+)?@)?";
+$regex .= "([a-z0-9-.]*)\.([a-z]{2,3})";
+$regex .= "(\:[0-9]{2,5})?";
+$regex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?";
+$regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?";
+$regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?";
 
-$dom = new DOMDocument();
-@$dom->loadHTML($html);
+if (preg_match("/^$regex$/i", $url)) {
+  $ch = curl_init();
 
-$imageNodes = $dom->getElementsByTagName('img');
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-$perPage = 8;
-$page = isset($_GET['page']) ? $_GET['page'] : 1;
+  $html = curl_exec($ch);
 
-$total = $imageNodes->length;
+  $dom = new DOMDocument();
+  @$dom->loadHTML($html);
 
-$imagesArray = iterator_to_array($imageNodes);
+  $imageNodes = $dom->getElementsByTagName('img');
 
-$offset = intval($page) * $perPage;
+  // Create array of images
+  foreach ($imageNodes as $node) {
+    if ($node->getAttribute('src')) {
+      $imageList[] = [
+        'url' => $node->getAttribute('src'),
+        'alt' => $node->getAttribute('alt'),
+      ];
+    }
+  }
 
-$currentImages = array_slice($imagesArray, $offset, $perPage);
+  $perPage = 8;
+  $page = isset($_GET['page']) ? $_GET['page'] : 1;
+
+  $total = $imageNodes->length;
+
+  $imagesArray = iterator_to_array($imageNodes);
+
+  $offset = intval($page) * $perPage;
+
+  $currentImages = array_slice($imagesArray, $offset, $perPage);
+} else {
+  $error = 'Url is not valid.';
+}
+
+// End clock time in seconds
+$end_time = microtime(true);
+
+// Calculate script execution time
+$execution_time = ($end_time - $start_time);
 
 ?>
 
@@ -45,26 +78,36 @@ $currentImages = array_slice($imagesArray, $offset, $perPage);
 
 <body>
   <div class="container">
-    <h3>All images</h3>
+    <a href="/">Back</a>
 
-    <div class="row">
-      <?php foreach ($currentImages as $image) { ?>
-        <div class="col-3">
-          <img class="img-fluid" src="<?php echo $image->getAttribute('src') ?>" alt="">
+    <div class="row justify-content-center">
+      <div class="col-4 text-center">
+        <?php if ($error) { ?>
+          <div class="alert alert-danger" role="alert">
+            <?php echo $error; ?>
+          </div>
+        <?php } ?>
+
+        <p><?php echo "Loading Time: " . round($execution_time, 2) . " sec"; ?></p>
+      </div>
+    </div>
+
+    <div>
+      <div class="row" id="images-container"></div>
+
+      <div class="row">
+        <div class="col">
+          <nav class="mt-4">
+            <ul class="pagination" id="pagination"></ul>
+          </nav>
         </div>
-      <?php } ?>
-
-      <nav aria-label="Page navigation example">
-        <ul class="pagination">
-          <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="<?php echo '/get-image.php?url=' . $_GET['url'] . '&page=' . ($page + 1) ?>">Next</a></li>
-        </ul>
-      </nav>
+      </div>
     </div>
   </div>
+  <script>
+    window.data = <?php echo json_encode($imageList) ?>
+  </script>
+  <script src="./app.js"></script>
 </body>
 
 </html>
