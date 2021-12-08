@@ -1,10 +1,10 @@
 <?php
+// Starting clock time in seconds
+$start_time = microtime(true);
 
 require_once './http.php';
 require_once './html-parser.php';
-
-// Starting clock time in seconds
-$start_time = microtime(true);
+require_once './validator.php';
 
 $url = $_GET['url'];
 
@@ -12,15 +12,7 @@ $error = null;
 
 $imageList = [];
 
-$regex = "((https?|ftp)\:\/\/)?";
-$regex .= "([a-z0-9+!*(),;?&=\$_.-]+(\:[a-z0-9+!*(),;?&=\$_.-]+)?@)?";
-$regex .= "([a-z0-9-.]*)\.([a-z]{2,3})";
-$regex .= "(\:[0-9]{2,5})?";
-$regex .= "(\/([a-z0-9+\$_-]\.?)+)*\/?";
-$regex .= "(\?[a-z+&\$_.-][a-z0-9;:@&%=+\/\$_.-]*)?";
-$regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?";
-
-if (preg_match("/^$regex$/i", $url)) {
+if (Validator::validateUrl($url)) {
   $html = HTTP::get($url);
 
   $imageNodes = HTMLParser::getImageTags($html);
