@@ -1,6 +1,7 @@
 <?php
 
 require_once './http.php';
+require_once './html-parser.php';
 
 // Starting clock time in seconds
 $start_time = microtime(true);
@@ -22,10 +23,7 @@ $regex .= "(#[a-z_.-][a-z0-9+\$_.-]*)?";
 if (preg_match("/^$regex$/i", $url)) {
   $html = HTTP::get($url);
 
-  $dom = new DOMDocument();
-  @$dom->loadHTML($html);
-
-  $imageNodes = $dom->getElementsByTagName('img');
+  $imageNodes = HTMLParser::getImageTags($html);
 
   // Create array of images
   foreach ($imageNodes as $node) {

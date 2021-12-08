@@ -2,6 +2,13 @@
 
 class HTTP
 {
+  /**
+   * HTTP get call to a given url
+   * 
+   * @param string $url
+   * 
+   * @return mixed
+   */
   public static function get($url)
   {
     $ch = curl_init();
