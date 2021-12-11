@@ -18,7 +18,9 @@ function changePage(pageValue) {
   for (var i = 0; i < paginatedItems.length; i++) {
     imageContainer.innerHTML += `<div class="col-3 text-center mb-3">
       <img class="img-fluid" src="${paginatedItems[i].url}" alt="${paginatedItems[i].alt}">
-      <div></div>
+      <div>
+        <p>Size: ${paginatedItems[i].size} Kb</p>
+      </div>
     </div>`;
   }
 
@@ -31,7 +33,9 @@ function changePage(pageValue) {
 
   function loaded() {
     var sizeContainer = this.nextElementSibling
-    sizeContainer.innerHTML = `Dimension: ${this.naturalHeight}x${this.naturalWidth}`
+    var p = document.createElement("p");
+    p.innerHTML = `Dimension: ${this.naturalHeight}x${this.naturalWidth}`
+    sizeContainer.prepend(p)
   }
 }
 

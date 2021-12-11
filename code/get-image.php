@@ -1,6 +1,9 @@
 <?php
+
+error_reporting(E_ERROR | E_PARSE);
 // Starting clock time in seconds
 $start_time = microtime(true);
+session_start();
 
 require_once './http.php';
 require_once './html-parser.php';
@@ -17,12 +20,28 @@ if (Validator::validateUrl($url)) {
 
   $imageNodes = HTMLParser::getImageTags($html);
 
+  $baseUrl = 'images/' . session_id();
+
+  if (!file_exists($baseUrl)) {
+    mkdir($baseUrl, 0777, true);
+  }
+
   // Create array of images
   foreach ($imageNodes as $node) {
     if ($node->getAttribute('src')) {
+      $imagePath = $baseUrl . '/' . basename($node->getAttribute('src'));
+
+      if (!file_exists($imagePath)) {
+        $img = $baseUrl . '/' . basename($node->getAttribute('src'));
+        file_put_contents($img, file_get_contents($node->getAttribute('src')));
+      }
+
+      $size = round(filesize($imagePath) / 1024, 2);
+
       $imageList[] = [
-        'url' => $node->getAttribute('src'),
-        'alt' => $node->getAttribute('alt'),
+        'url'   => $imagePath,
+        'alt'   => $node->getAttribute('alt'),
+        'size'  => $size,
       ];
     }
   }
